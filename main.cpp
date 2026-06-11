@@ -9,7 +9,6 @@ int main(void){
 
     Chiffrer obj;
     obj.enter();
-    
-    std::cout << "fin de programme\n";
+    obj.print();
     
 }

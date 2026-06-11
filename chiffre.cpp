@@ -83,7 +83,7 @@ void Chiffrer::build(){
 // - Text_depart
 // - La_cle
 void Chiffrer::enter() {
-    // TEXTE DE DEPART
+    // SAISIR LE TEXTE DE DEPART
     std::cout << "Saisir un texte à chiffrer (Taper ';;' pour signaler la fin du texte):\n";
     int c = getchar();
     textLength = 0;
@@ -94,7 +94,7 @@ void Chiffrer::enter() {
         c = getchar();
         textLength++;
     }
-    // on ignore la suite de caractères "\n ; ; \n" qui signalent la séparation entre le texte et la clé
+    // La suite de caractères ";;\n" marque la séparation entre le texte et la clé
     textLength--;   // ';'
     if (Texte_depart[textLength - 1] == '\n'){ // '\n'
         textLength--;
@@ -104,7 +104,7 @@ void Chiffrer::enter() {
         printf("%c", Texte_depart[i]);
     }
     
-    // CLE DE CRYPTAGE
+    // SAISIR LA CLE DE CRYPTAGE
     std::cout << std::endl;
     std::cout << "Saisir la clé de cryptage (Tapez Ctrl + d pour continuer):\n";
   
@@ -126,11 +126,183 @@ void Chiffrer::enter() {
     std::cout << std::endl;
 }
 
-int Decalage(int c){
+int Chiffrer::Decalage(int c){
     if (c < 65 || c > 122) {
         std::cout << "Erreur : argument invalide\n";
         std::cout << "Fonction : Decalage\n";
         return -1;
     }
     return c - 65;
+}
+
+void Chiffrer::print() {
+    // LETTRE ET RANG
+    std::cout << "Lettre\t\t\t\t\t\t";
+    for (int i = 0; i < 26; i++ ){
+        std::cout << " " << static_cast<char>(lettres[i]) << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "Rang dans l'alphabet\t\t\t\t";
+    for (int i = 0; i < 26; i++ ){
+        std::cout << " " << lettres[i] - 64 ;
+        if (lettres[i] < 74)
+            std::cout << " ";
+    }
+    std::cout << "\n\n\n\n" ;
+
+    // CLE DE CRYPTAGE ET DECALAGE
+    std::cout << "Clé de cryptage\t\t\t\t\t";
+    for (int i = 0; i < cleLength; i++){
+        std::cout << " " << static_cast<char>(La_cle[i]) << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "Décalage (par rapport à la lettre A)\t\t\033[46m";
+    for (int i = 0; i < cleLength; i++){
+        std::cout << " " << La_cle[i] - 65 ;
+        if (La_cle[i] < 74)
+            std::cout << " ";
+    }
+    std::cout << "\033[0m\n\n\n";
+
+    // TEXTE ET RANG
+    std::cout << "Texte à crypter\t\t\t\t\t";
+    for (int i = 0; i < textLength; i++){
+        std::cout << " " << static_cast<char>(Texte_depart[i]) << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "Rang de départ\t\t\t\t\t";
+    for (int i = 0; i < textLength; i++ ){
+        std::cout << " " << Texte_depart[i] - 64;
+        if (Texte_depart[i] < 74)
+            std::cout << " ";
+    }
+    std::cout << std::endl;
+
+    // DECALAGE
+    std::cout << "Décalage\t\t\t\t\t";
+    int m = textLength / cleLength;
+    int r = textLength % cleLength;
+    int count = 0;
+    while (count < m){
+        if (count % 2 == 0)
+            std::cout << "\033[46m";
+        else
+            std::cout << "\033[41m";
+
+        for (int i = 0; i < cleLength; i++){
+            std::cout << " " << La_cle[i] - 65 ;
+            if (La_cle[i] < 74)
+                std::cout << " ";
+        }
+        count++;
+    }
+    std::cout << "\033[46m";
+    for (int i = 0; i < r; i++){
+        std::cout << " " << La_cle[i] - 65 ;
+        if (La_cle[i] < 74)
+            std::cout << " ";
+    }
+    std::cout << "\033[0m" << std::endl;
+
+    // RANG APRES (somme)
+    std::cout << "Rang après décalage (somme)\t\t\t";
+    m = textLength / cleLength;
+    r = textLength % cleLength;
+    count = 0;
+    int rang = 0;
+    while (count < m){
+        for (int i = 0; i < cleLength; i++){
+            rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+            std::cout << " " << rang;
+            if (rang < 10)
+                std::cout << " ";
+        }
+        count++;
+    }
+    for (int i = 0; i < r; i++){
+        rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+        std::cout << " " << rang;
+        if (rang < 10)
+            std::cout << " ";
+    }
+    std::cout << std::endl;
+
+    // RANG FINAL (1 <= rang <= 26 )
+    std::cout << "Rang Final (Total ou Total-26)\t\t\t";
+    m = textLength / cleLength;
+    r = textLength % cleLength;
+    count = 0;
+    rang = 0;
+    while (count < m){
+        for (int i = 0; i < cleLength; i++){
+            rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+            if (rang % 26 != 0)
+                rang = rang % 26;
+            std::cout << " " << rang;
+            if (rang < 10)
+                std::cout << " ";
+        }
+        count++;
+    }
+    for (int i = 0; i < r; i++){
+        rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+        if (rang % 26 != 0)
+            rang = rang % 26;
+        std::cout << " " << rang;
+        if (rang < 10)
+            std::cout << " ";
+    }
+    std::cout << std::endl;
+
+    // LETTRE APRES
+    std::cout << "Texte crypté (lettre associée au rang final)\t";
+    m = textLength / cleLength;
+    r = textLength % cleLength;
+    count = 0;
+    rang = 0;
+    while (count < m){
+        for (int i = 0; i < cleLength; i++){
+            rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+            if (rang % 26 != 0)
+                rang = rang % 26;
+            std::cout << " " << static_cast<char>(rang + 64) << " ";   // CODE ASCII DE LA LETTRE
+        }
+        count++;
+    }
+    for (int i = 0; i < r; i++){
+        rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+        if (rang % 26 != 0)
+            rang = rang % 26;
+        std::cout << " " << static_cast<char>(rang + 64) << " ";   // CODE ASCII DE LA LETTRE
+    }
+    std::cout << "\n\n";
+
+    // TEXTE DE DEPART
+    std::cout << "\033[1mTexte de départ\033[0m" << std::endl;
+    for (int i = 0; i < textLength; i++){
+        std::cout << static_cast<char>(Texte_depart[i]);
+    }
+
+    // TEXTE CRYPTE
+    std::cout << "\n\n\033[1m" << "Texte crypté" << "\033[0m\n";
+    m = textLength / cleLength;
+    r = textLength % cleLength;
+    count = 0;
+    rang = 0;
+    while (count < m){
+        for (int i = 0; i < cleLength; i++){
+            rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+            if (rang % 26 != 0)
+                rang = rang % 26;
+            std::cout << static_cast<char>(rang + 64);   // CODE ASCII DE LA LETTRE
+        }
+        count++;
+    }
+    for (int i = 0; i < r; i++){
+        rang = (Texte_depart[ cleLength * count + i] - 64) + (La_cle[i] - 65);
+        if (rang % 26 != 0)
+            rang = rang % 26;
+        std::cout << static_cast<char>(rang + 64);   // CODE ASCII DE LA LETTRE
+    }
+    std::cout << std::endl;
 }
