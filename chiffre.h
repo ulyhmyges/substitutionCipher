@@ -9,7 +9,10 @@ public:
     Chiffrer();
     int Decalage(int letter);
     int Cryptage(int letter);
+    int rang(int letter);
     void enter();
+    template <typename T>
+    std::string format(T value);
     void print();
     void fprint();
 

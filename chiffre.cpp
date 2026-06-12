@@ -100,14 +100,9 @@ void Chiffrer::enter() {
         textLength--;
     }
     c = getchar();  // '\n'
-    for (int i = 0; i < textLength; i++){
-        printf("%c", Texte_depart[i]);
-    }
     
     // SAISIR LA CLE DE CRYPTAGE
-    std::cout << std::endl;
     std::cout << "Saisir la clé de cryptage (Tapez Ctrl + d pour continuer):\n";
-  
     c = getchar();
     cleLength = 0;
     while (c != EOF){
@@ -120,150 +115,204 @@ void Chiffrer::enter() {
     if (La_cle[cleLength - 1] == '\n'){
         cleLength--;
     }
-    for (int i = 0; i < cleLength; i++){
-        printf("%c", La_cle[i]);
-    }
     std::cout << std::endl;
 }
 
-int Chiffrer::Decalage(int c){
-    if (c < 65 || c > 122) {
+// Calcule le décalage de la ième lettre du tableau Texte_depart pour i = index  
+int Chiffrer::Decalage(int index){
+    if (index < 0 || index >= textLength) {
         std::cout << "Erreur : argument invalide\n";
-        std::cout << "Fonction : Decalage\n";
+        std::cout << "Méthode : Decalage()\n";
         return -1;
     }
-    return c - 65;
+    return  La_cle[index % cleLength] - 65 ;
+}
 
-    int m = textLength / cleLength;
-    int r = textLength % cleLength;
-    int count = 0;
-    // cleLength * m + r
-    while (count < m){
-        if (count % 2 == 0)
-            std::cout << "\033[46m";
-        else
-            std::cout << "\033[41m";
+// Pour chaque lettre de Texte_depart, 
+// on somme son rang de départ avec le décalage fourni par la clé de cryptage La_cle
+// on retourne sa valeur ASCII
+int Chiffrer::Cryptage(int index){
+    if (index < 0 || index >= textLength) {
+        std::cout << "Erreur : argument invalide\n";
+        std::cout << "Méthode : rang()\n";
+        return -1;
+    }
+    int r = rang(Texte_depart[index]) + Decalage(index);
+    r = r % 26 == 0 ? 26 : r % 26;
+    return r + 64;
+}
 
-        for (int i = 0; i < cleLength; i++){
-            std::cout << " " << La_cle[i] - 65 ;
-            if (La_cle[i] < 74)
-                std::cout << " ";
-        }
-        count++;
+// Détermine le rang d'une lettre à partir de son code ASCII
+int Chiffrer::rang(int letter){
+    return letter - 64;
+}
+
+template<typename T>
+std::string Chiffrer::format(T value){
+    char str[5];
+    // type T = char ou type T = int
+    if (sizeof(T) == 1){
+        snprintf(str, 4, " %c ", value); 
+    } else if (value < 10) {
+        snprintf(str, 4, " %d ", value);
+    } else {
+        snprintf(str, 4, " %d", value);
     }
-    std::cout << "\033[46m";
-    for (int i = 0; i < r; i++){
-        std::cout << " " << La_cle[i] - 65 ;
-        if (La_cle[i] < 74)
-            std::cout << " ";
-    }
-    std::cout << "\033[0m" << std::endl;
+    return str;
 }
 
 void Chiffrer::print() {
-    // LETTRE ET RANG
-    std::cout << "Lettre\t\t\t\t\t\t";
+    std::cout << "Lettre\t\t\t\t\t\t";      // LETTRE
     for (int i = 0; i < 26; i++ ){
-        std::cout << " " << static_cast<char>(lettres[i]) << " ";
+        std::cout << format(static_cast<char>(lettres[i]));
     }
     std::cout << std::endl;
-    std::cout << "Rang dans l'alphabet\t\t\t\t";
+
+    std::cout << "Rang dans l'alphabet\t\t\t\t";    // RANG
     for (int i = 0; i < 26; i++ ){
-        std::cout << " " << lettres[i] - 64 ;
-        if (lettres[i] < 74)
-            std::cout << " ";
+        std::cout << format(rang(lettres[i]));
     }
     std::cout << "\n\n\n\n" ;
 
-    // CLE DE CRYPTAGE ET DECALAGE
-    std::cout << "Clé de cryptage\t\t\t\t\t";
+    std::cout << "Clé de cryptage\t\t\t\t\t";   // CLE DE CRYPTAGE
     for (int i = 0; i < cleLength; i++){
-        std::cout << " " << static_cast<char>(La_cle[i]) << " ";
+        std::cout << format<char>(static_cast<char>(La_cle[i]));
     }
     std::cout << std::endl;
-    std::cout << "Décalage (par rapport à la lettre A)\t\t\033[46m";
+
+    std::cout << "Décalage (par rapport à la lettre A)\t\t\033[46m";    // DECALAGE
     for (int i = 0; i < cleLength; i++){
-        std::cout << " " << La_cle[i] - 65 ;
-        if (La_cle[i] < 74)
-            std::cout << " ";
+        std::cout << format(Decalage(i));
     }
     std::cout << "\033[0m\n\n\n";
 
-    // TEXTE ET RANG
-    std::cout << "Texte à crypter\t\t\t\t\t";
+    std::cout << "Texte à crypter\t\t\t\t\t";   // TEXTE
     for (int i = 0; i < textLength; i++){
-        std::cout << " " << static_cast<char>(Texte_depart[i]) << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "Rang de départ\t\t\t\t\t";
-    for (int i = 0; i < textLength; i++ ){
-        std::cout << " " << Texte_depart[i] - 64;
-        if (Texte_depart[i] < 74)
-            std::cout << " ";
+        std::cout << format(static_cast<char>(Texte_depart[i]));
     }
     std::cout << std::endl;
 
-    // DECALAGE
-    std::cout << "Décalage\t\t\t\t\t";
+    std::cout << "Rang de départ\t\t\t\t\t";    // RANG AVANT
+    for (int i = 0; i < textLength; i++ ){
+        std::cout << format(rang(Texte_depart[i]));
+    }
+    std::cout << std::endl;
+
+    std::cout << "Décalage\t\t\t\t\t";  // DECALAGE
     bool topple = false;
     for (int i = 0; i < textLength; i++){
         if (i % cleLength == 0)
-            topple = !topple;
-            
+            topple = !topple;  
         std::cout << (topple ? "\033[46m" : "\033[41m");
-        
-        std::cout << " " << La_cle[i % cleLength] - 65 ;
-            if (La_cle[i % cleLength] < 74)
-                std::cout << " ";
+        std::cout << format(Decalage(i));
     }
     std::cout << "\033[0m" << std::endl;
 
-    // RANG APRES (somme)
-    std::cout << "Rang après décalage (somme)\t\t\t";
-    int rang = 0;
+    std::cout << "Rang après décalage (somme)\t\t\t";   // RANG APRES
+    // int sum = 0;
     for (int i = 0; i < textLength; i++){
-        rang = (Texte_depart[i] - 64) + (La_cle[i % cleLength] - 65);
-        std::cout << " " << rang;
-            if (rang < 10)
-            std::cout << " ";
+        std::cout << format(rang(Texte_depart[i]) + Decalage(i));
     }
     std::cout << std::endl;
 
-    // RANG FINAL (1 <= rang <= 26 )
-    std::cout << "Rang Final (Total ou Total-26)\t\t\t";
+    std::cout << "Rang Final (Total ou Total-26)\t\t\t";    // RANG FINAL
     for (int i = 0; i < textLength; i++){
-        rang = (Texte_depart[i] - 64) + (La_cle[i % cleLength] - 65);
-        rang = rang % 26 == 0 ? 26 : rang % 26;
-
-        std::cout << " " << rang;
-        if (rang < 10)
-            std::cout << " ";
+        std::cout << format(rang(Cryptage(i)));
     }
     std::cout << std::endl;
 
-    // LETTRE APRES
-    std::cout << "Texte crypté (lettre associée au rang final)\t";
+    std::cout << "Texte crypté (lettre associée au rang final)\t";  // TEXTE CRYPTE
     for (int i = 0; i < textLength; i++){
-        rang = (Texte_depart[i] - 64) + (La_cle[i % cleLength] - 65);
-        rang = rang % 26 == 0 ? 26 : rang % 26;
-        
-        std::cout << " " << static_cast<char>(rang + 64) << " ";   // CODE ASCII DE LA LETTRE
+        std::cout << format(static_cast<char>(Cryptage(i)));
     }
     std::cout << "\n\n";
 
-    // TEXTE DE DEPART
-    std::cout << "\033[1mTexte de départ\033[0m" << std::endl;
+    std::cout << "\033[1mTexte de départ\033[0m" << std::endl;  // TEXTE DE DEPART
     for (int i = 0; i < textLength; i++){
         std::cout << static_cast<char>(Texte_depart[i]);
     }
 
-    // TEXTE CRYPTE
-    std::cout << "\n\n\033[1m" << "Texte crypté" << "\033[0m\n";
+    std::cout << "\n\n\033[1m" << "Texte crypté" << "\033[0m\n";    // TEXTE CRYPTE
+    for (int i = 0; i < textLength; i++){   
+        std::cout << static_cast<char>(Cryptage(i));
+    }
+    std::cout << std::endl;
+}
+
+void Chiffrer::fprint(){
+    std::cout << "Lettre\t\t\t\t\t\t";      // LETTRE
+    for (int i = 0; i < 26; i++ ){
+        std::cout << format(static_cast<char>(lettres[i]));
+    }
+    std::cout << std::endl;
+
+    std::cout << "Rang dans l'alphabet\t\t\t\t";    // RANG
+    for (int i = 0; i < 26; i++ ){
+        std::cout << format(rang(lettres[i]));
+    }
+    std::cout << "\n\n\n\n" ;
+
+    std::cout << "Clé de cryptage\t\t\t\t\t";   // CLE DE CRYPTAGE
+    for (int i = 0; i < cleLength; i++){
+        std::cout << format<char>(static_cast<char>(La_cle[i]));
+    }
+    std::cout << std::endl;
+
+    std::cout << "Décalage (par rapport à la lettre A)\t\t\033[46m";    // DECALAGE
+    for (int i = 0; i < cleLength; i++){
+        std::cout << format(Decalage(i));
+    }
+    std::cout << "\033[0m\n\n\n";
+
+    std::cout << "Texte à crypter\t\t\t\t\t";   // TEXTE
     for (int i = 0; i < textLength; i++){
-        rang = (Texte_depart[i] - 64) + (La_cle[i % cleLength] - 65);
-        rang = rang % 26 == 0 ? 26 : rang % 26;
-        
-        std::cout << static_cast<char>(rang + 64);   // CODE ASCII DE LA LETTRE
+        std::cout << format(static_cast<char>(Texte_depart[i]));
+    }
+    std::cout << std::endl;
+
+    std::cout << "Rang de départ\t\t\t\t\t";    // RANG AVANT
+    for (int i = 0; i < textLength; i++ ){
+        std::cout << format(rang(Texte_depart[i]));
+    }
+    std::cout << std::endl;
+
+    std::cout << "Décalage\t\t\t\t\t";  // DECALAGE
+    bool topple = false;
+    for (int i = 0; i < textLength; i++){
+        if (i % cleLength == 0)
+            topple = !topple;  
+        std::cout << (topple ? "\033[46m" : "\033[41m");
+        std::cout << format(Decalage(i));
+    }
+    std::cout << "\033[0m" << std::endl;
+
+    std::cout << "Rang après décalage (somme)\t\t\t";   // RANG APRES
+    // int sum = 0;
+    for (int i = 0; i < textLength; i++){
+        std::cout << format(rang(Texte_depart[i]) + Decalage(i));
+    }
+    std::cout << std::endl;
+
+    std::cout << "Rang Final (Total ou Total-26)\t\t\t";    // RANG FINAL
+    for (int i = 0; i < textLength; i++){
+        std::cout << format(rang(Cryptage(i)));
+    }
+    std::cout << std::endl;
+
+    std::cout << "Texte crypté (lettre associée au rang final)\t";  // TEXTE CRYPTE
+    for (int i = 0; i < textLength; i++){
+        std::cout << format(static_cast<char>(Cryptage(i)));
+    }
+    std::cout << "\n\n";
+
+    std::cout << "\033[1mTexte de départ\033[0m" << std::endl;  // TEXTE DE DEPART
+    for (int i = 0; i < textLength; i++){
+        std::cout << static_cast<char>(Texte_depart[i]);
+    }
+
+    std::cout << "\n\n\033[1m" << "Texte crypté" << "\033[0m\n";    // TEXTE CRYPTE
+    for (int i = 0; i < textLength; i++){   
+        std::cout << static_cast<char>(Cryptage(i));
     }
     std::cout << std::endl;
 }
