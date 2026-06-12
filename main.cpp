@@ -7,9 +7,9 @@ int main(void){
     //
     toUppercase("dream.txt", "out.txt");
 
-    Chiffrer obj;
+    Chiffrer obj(false);
     obj.enter();
-    obj.print();
-    obj.toFile();
+    // obj.print();
+    // obj.toFile();
     
 }

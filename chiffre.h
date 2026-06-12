@@ -6,13 +6,15 @@ void toUppercase(const char* input, const char* output);
 
 class Chiffrer {
 public:
-    Chiffrer();
+    Chiffrer(bool cipher);
     int Decalage(int letter);
     int Cryptage(int letter);
-    int rang(int letter);
     void enter();
+
     template <typename T>
     std::string format(T value);
+    int rang(int letter);
+
     void print();
     void toFile();
 
@@ -24,6 +26,9 @@ private:
     int textLength;
     int cleLength;
     int La_cle[100];
+    int cipherText[500];
+    int cTextLength;
+    bool cipher;
     std::string output = "sortie.txt";
 };
 

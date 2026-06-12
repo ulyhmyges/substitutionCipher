@@ -66,7 +66,7 @@ void toUppercase(const char *input, const char *output)
     fclose(w);
 }
 
-Chiffrer::Chiffrer() {
+Chiffrer::Chiffrer(bool cipher) : cipher(cipher) {
     build();
 }
 
@@ -109,26 +109,42 @@ void Chiffrer::enter() {
     scanf("%c", &c);
     
     // SAISIR LA CLE DE CRYPTAGE
-    std::cout << "Saisir la clé de cryptage (Tapez Ctrl + d pour continuer):\n";
-    // c = getchar();
-    scanf("%c", &c);
-    cleLength = 0;
-    count = 0;
-    while (c != EOF && c != '\n'){
-           std::cout << "count"<< count <<std::endl;
-        // printf("%c %d,", c, cleLength);
-        La_cle[cleLength] = c;
-        // c = getchar();
+    if (cipher == true) {
+        std::cout << "Saisir la clé de cryptage (Tapez Ctrl + d pour continuer):\n";
         scanf("%c", &c);
-        
-        cleLength++;
-        count++;
-    }
-    // n'inclue pas le caractère '\n' dans la clé de cryptage La_cle
-    if (cleLength > 0 && La_cle[cleLength - 1] == '\n'){
+        cleLength = 0;
+        while (c != EOF && c != '\n'){
+            La_cle[cleLength] = c;
+            scanf("%c", &c);
+            cleLength++;
+        }
+        // n'inclue pas le caractère '\n' dans la clé de cryptage La_cle
+        if (cleLength > 0 && La_cle[cleLength - 1] == '\n'){
         cleLength--;
+        }
+
+        std::cout << std::endl;
+    } else {
+        // SAISIR LE TEXTE CRYPTE
+        std::cout << "Saisir un texte chiffré (Taper ';;' pour signaler la fin du texte):\n";
+        scanf("%c", &c);
+        cTextLength = 0;
+        last = 0;
+        while (c!= EOF && !(c == ';' && last == ';')){
+            last = c;
+            cipherText[cTextLength] = c;
+            scanf("%c", &c);
+            cTextLength++;
+        }
+        // La suite de caractères ";;\n" marque la séparation entre le texte et la clé
+        cTextLength--;   // ';'
+        if (cTextLength > 0 && cipherText[cTextLength - 1] == '\n'){ // '\n'
+            cTextLength--;
+        }
+
+        scanf("%c", &c);    // '\n'
     }
-    std::cout << std::endl;
+    
 }
 
 // Calcule le décalage de la ième lettre du tableau Texte_depart pour i = index  
