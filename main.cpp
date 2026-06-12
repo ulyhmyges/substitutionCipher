@@ -10,5 +10,6 @@ int main(void){
     Chiffrer obj;
     obj.enter();
     obj.print();
+    obj.toFile();
     
 }

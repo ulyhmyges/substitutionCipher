@@ -14,7 +14,7 @@ public:
     template <typename T>
     std::string format(T value);
     void print();
-    void fprint();
+    void toFile();
 
 private:
     int lettres[26];
