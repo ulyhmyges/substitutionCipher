@@ -84,29 +84,25 @@ void Chiffrer::build(){
 // - La_cle
 void Chiffrer::enter() {
     // SAISIR LE TEXTE DE DEPART
-    std::cout << "Saisir un texte à chiffrer (Taper ';;' pour signaler la fin du texte):\n";
+    std::cout << "Saisir le texte en clair (Taper ';;' pour signaler la fin du texte):\n";
     // int c = getchar();
-    int c;
+    char c;
     scanf("%c", &c);
     textLength = 0;
-    int last = 0;
-    int count = 0;
+    char last = 0;
     while (c!= EOF && !(c == ';' && last == ';')){
-        std::cout << "count"<< count <<std::endl;
         last = c;
         Texte_depart[textLength] = c;
-        // c = getchar();
         scanf("%c", &c);
         textLength++;
-        count++;
     }
     // La suite de caractères ";;\n" marque la séparation entre le texte et la clé
     textLength--;   // ';'
     if (textLength > 0 && Texte_depart[textLength - 1] == '\n'){ // '\n'
         textLength--;
     }
-    // c = getchar();  // '\n'
-    scanf("%c", &c);
+    // flush stdin
+    scanf("%c", &c);    // '\n' 
     
     // SAISIR LA CLE DE CRYPTAGE
     if (cipher == true) {
@@ -122,11 +118,10 @@ void Chiffrer::enter() {
         if (cleLength > 0 && La_cle[cleLength - 1] == '\n'){
         cleLength--;
         }
-
         std::cout << std::endl;
     } else {
         // SAISIR LE TEXTE CRYPTE
-        std::cout << "Saisir un texte chiffré (Taper ';;' pour signaler la fin du texte):\n";
+        std::cout << "Saisir le texte chiffré (Taper ';;' pour signaler la fin du texte):\n";
         scanf("%c", &c);
         cTextLength = 0;
         last = 0;
@@ -136,13 +131,51 @@ void Chiffrer::enter() {
             scanf("%c", &c);
             cTextLength++;
         }
+        if (cTextLength == 0) {
+            std::cout << "Erreur : Text chiffré invalide\n";
+            return;
+        }
         // La suite de caractères ";;\n" marque la séparation entre le texte et la clé
         cTextLength--;   // ';'
         if (cTextLength > 0 && cipherText[cTextLength - 1] == '\n'){ // '\n'
             cTextLength--;
         }
-
+        if (cTextLength != textLength) {
+            std::cout << "Erreur : Text chiffré invalide\n";
+            return;
+        }
+        // flush
         scanf("%c", &c);    // '\n'
+
+     
+        int x = rang(cipherText[0]) - rang(Texte_depart[0]);
+        x = x > 0 ? x : x + 26; // si le décalage est négatif, on ajoute 26;
+        int j;
+        cleLength = 0;
+        for (j = 1; j < cTextLength; j++){
+            int y = rang(cipherText[j]) - rang(Texte_depart[j]);
+            y = y > 0 ? y : y + 26; // si le décalage est négatif, on ajoute 26;
+            if (x == y){
+                break;
+            }
+        }
+        cleLength = j;
+        for (int i = 0; i < cleLength; i++){
+            x = rang(cipherText[i]) - rang(Texte_depart[i]);
+            x = x > 0 ? x : x + 26; // si le décalage est négatif, on ajoute 26;
+            La_cle[i] = x + 65;
+        }
+
+        for (int i = 0; i < cTextLength; i++){
+            x = rang(Texte_depart[i]) + La_cle[i % cleLength] - 65;
+            x = x % 26 == 0 ? 26 : x % 26;
+            int y = rang(cipherText[i]);
+            y = y % 26 == 0 ? 26 : y % 26;
+            if (x != y){
+                std::cout << "Erreur : Les textes (en clair et crypté) ne correspondent pas.\n";
+                return;
+            }
+        }
     }
     
 }

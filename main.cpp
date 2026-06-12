@@ -9,7 +9,7 @@ int main(void){
 
     Chiffrer obj(false);
     obj.enter();
-    // obj.print();
+    obj.print();
     // obj.toFile();
-    
+
 }
