@@ -1,5 +1,5 @@
-#ifndef CHIFFRE_H
-#define CHIFFRE_H
+#ifndef CHIFFRER_H
+#define CHIFFRER_H
 #include <string>
 
 void toUppercase(const char* input, const char* output);
@@ -32,4 +32,4 @@ private:
     std::string output = "sortie.txt";
 };
 
-#endif  // CHIFFRE__H
+#endif  // CHIFFRER__H
