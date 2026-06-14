@@ -273,6 +273,7 @@ void Chiffrer::output(bool isSaved){
     // MODE DECIPHER = true
     if (decipher){
         // AFFICHE DANS LA CONSOLE
+        std::cout << "\n===== ANALYSE (MODE DECIPHER) =====\n";
         std::cout << "Texte initial : ";
         for (int i = 0; i < textLength; i++){
             std::cout << static_cast<char>(Texte_depart[i]);
@@ -289,9 +290,8 @@ void Chiffrer::output(bool isSaved){
         return;
     }
    
-    // MODE DECIPHER = false
-
     // AFFICHE DANS LA CONSOLE
+    std::cout << "\n===== ANALYSE (MODE CIPHER) =====\n";
     std::cout << "Lettre\t\t\t\t\t\t";      // LETTRE
     for (int i = 0; i < 26; i++ ){
         std::cout << format(static_cast<char>(lettres[i]));
@@ -370,16 +370,16 @@ void Chiffrer::output(bool isSaved){
 
     if (!isSaved)
         return;
-    
-    std::cout << "\n===== Sauvegarde des résultats =====\n";
+
     FILE* f = NULL;
-    f = fopen(path, "a");
+    f = fopen(path, "r+");  // le fichier doit exister
     if (f == NULL){
-        std::cout << "Erreur: ouverture impossible du fichier\n";
+        std::cout << "\nErreur: ouverture impossible du fichier ";
+        std::cout << path << std::endl;
         return;
     }
-    // fseek(f, 0, SEEK_END);  // position curseur à la fin du fichier
-    fputs("===== RESULTATS =====", f);
+    fseek(f, 0, SEEK_END);  // position curseur à la fin du fichier
+    fputs("ANALYSE (MODE CIPHER) =====\n", f);
     fputs("Lettre\t\t\t\t\t\t\t\t\t\t\t", f);   // LETTRE
     for (int i = 0; i < 26; i++ ){
         fputs(format(static_cast<char>(lettres[i])).c_str(), f);
@@ -430,4 +430,6 @@ void Chiffrer::output(bool isSaved){
     }
     fputc('\n', f);
     fclose(f);
+    std::cout << "\n===== Résultats sauvegardées =====\n";
+    std::cout << "fichier : " << path << std::endl;
 }
