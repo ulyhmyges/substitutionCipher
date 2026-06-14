@@ -60,7 +60,6 @@ void toUppercase(const char *input, const char *output)
 
         // écriture dans le fichier de sortie output
         fputc(c, w);
-        //std::cout << static_cast<char>(c) << " = " << c << std::endl;
     }
     fclose(f);
     fclose(w);
@@ -69,12 +68,12 @@ void toUppercase(const char *input, const char *output)
 Chiffrer::Chiffrer(bool _decipher) : decipher(_decipher), error(false) {
     // construction des lettres et rangs de l'alphabet
     for (int i = 0; i < 26; i++){
-        lettres[i] = i + 65;
-        rangs[i] = i + 1;
+        lettres[i] = (char)i + 65;
     }
+    // size = 500;
 }
 
-void Chiffrer::Analyze(bool isSaved){
+void Chiffrer::Analyse(bool isSaved){
     input(isSaved);
     if (error)
         return;
@@ -125,7 +124,7 @@ void Chiffrer::Analyze(bool isSaved){
 // Calcule le décalage de la ième lettre du tableau Texte_depart pour i = index  
 // letter (int) : lettre à décaler exprimée en code ASCII
 // ref (int) : lettre de référence exprimée en code ASCII
-int Chiffrer::Decalage(int letter, int ref){
+char Chiffrer::Decalage(char letter, char ref){
     // la lettre à décaler et la lettre de référence 
     if (letter < 65 || letter > 90 || ref < 65 || ref > 90) {
         std::cout << "\nErreur : argument invalide - ";
@@ -134,7 +133,7 @@ int Chiffrer::Decalage(int letter, int ref){
         return -1;
     }
     // return  La_cle[index % cleLength] - 65 ;
-    int x = letter - ref;
+    char x = letter - ref;
     x = x < 0 ? x + 26 : x % 26 == 0 ? 26 : x % 26;
     return x;
 }
@@ -142,13 +141,13 @@ int Chiffrer::Decalage(int letter, int ref){
 // Pour chaque lettre de Texte_depart, 
 // on somme son rang de départ avec le décalage fourni par la clé de cryptage La_cle
 // on retourne sa valeur ASCII
-int Chiffrer::Cryptage(int i, bool key){
+char Chiffrer::Cryptage(int i, bool key){
     if (i < 0 || i >= textLength) {
         std::cout << "\nErreur : argument invalide\n";
         std::cout << "Méthode : Cryptage()\n";
         return -1;
     }
-    int letter = 0;
+    char letter = 0;
     if (key){
         // difference des rangs (début et fin) = décalage de la lettre de la clé de cryptage
         letter = Decalage(Texte_cipher[i], 90) - Decalage(Texte_depart[i], 90);
@@ -168,13 +167,12 @@ int Chiffrer::Cryptage(int i, bool key){
 //     return letter - 64;
 // }
 
-template<typename T>
-std::string Chiffrer::format(T value){
+
+std::string Chiffrer::format(char value, bool decimal){
     char str[5];
-    // type T = char ou type T = int
-    if (sizeof(T) == 1){
+    if (!decimal){
         snprintf(str, 4, " %c ", value); 
-    } else if (value < 10) {
+    } else if (value < 74) {
         snprintf(str, 4, " %d ", value);
     } else {
         snprintf(str, 4, " %d", value);
@@ -276,17 +274,17 @@ void Chiffrer::output(bool isSaved){
         std::cout << "\n===== ANALYSE (MODE DECIPHER) =====\n";
         std::cout << "Texte initial : ";
         for (int i = 0; i < textLength; i++){
-            std::cout << static_cast<char>(Texte_depart[i]);
+            std::cout << Texte_depart[i];
         }
         std::cout << "\nTexte crypté : ";
         for (int i = 0; i < textLength; i++){   
-            std::cout << static_cast<char>(Cryptage(i));
+            std::cout << Cryptage(i);
         }
         std::cout << "\nClé de cryptage : ";
         for (int i = 0; i < cleLength; i++){
-            std::cout << static_cast<char>(La_cle[i]);
+            std::cout << La_cle[i];
         }
-        std::cout << std::endl;
+        std::cout << "\n===== FIN D'ANALYSE =====\n";
         return;
     }
    
@@ -294,37 +292,37 @@ void Chiffrer::output(bool isSaved){
     std::cout << "\n===== ANALYSE (MODE CIPHER) =====\n";
     std::cout << "Lettre\t\t\t\t\t\t";      // LETTRE
     for (int i = 0; i < 26; i++ ){
-        std::cout << format(static_cast<char>(lettres[i]));
+        std::cout << format(lettres[i]);
     }
     std::cout << std::endl;
 
     std::cout << "Rang dans l'alphabet\t\t\t\t";    // RANG
     for (int i = 0; i < 26; i++ ){
-        std::cout << format(Decalage(lettres[i], 90));
+        std::cout << format(Decalage(lettres[i], 90), true);
     }
     std::cout << "\n\n\n\n" ;
 
     std::cout << "Clé de cryptage\t\t\t\t\t";   // CLE DE CRYPTAGE
     for (int i = 0; i < cleLength; i++){
-        std::cout << format<char>(static_cast<char>(La_cle[i]));
+        std::cout << format(La_cle[i]);
     }
     std::cout << std::endl;
 
     std::cout << "Décalage (par rapport à la lettre A)\t\t\033[46m";    // DECALAGE
     for (int i = 0; i < cleLength; i++){
-        std::cout << format(Decalage(La_cle[i]));
+        std::cout << format(Decalage(La_cle[i]), true);
     }
     std::cout << "\033[0m\n\n\n";
 
     std::cout << "Texte à crypter\t\t\t\t\t";   // TEXTE
     for (int i = 0; i < textLength; i++){
-        std::cout << format(static_cast<char>(Texte_depart[i]));
+        std::cout << format(Texte_depart[i]);
     }
     std::cout << std::endl;
 
     std::cout << "Rang de départ\t\t\t\t\t";    // RANG AVANT
     for (int i = 0; i < textLength; i++ ){
-        std::cout << format(Decalage(Texte_depart[i], 90));
+        std::cout << format(Decalage(Texte_depart[i], 90), true);
     }
     std::cout << std::endl;
 
@@ -334,37 +332,37 @@ void Chiffrer::output(bool isSaved){
         if (i % cleLength == 0)
             topple = !topple;  
         std::cout << (topple ? "\033[46m" : "\033[41m");
-        std::cout << format(Decalage(La_cle[i % cleLength]));
+        std::cout << format(Decalage(La_cle[i % cleLength]), true);
     }
     std::cout << "\033[0m" << std::endl;
 
     std::cout << "Rang après décalage (somme)\t\t\t";   // RANG APRES
     // int sum = 0;
     for (int i = 0; i < textLength; i++){
-        std::cout << format(Decalage(Texte_depart[i], 90) + Decalage(La_cle[i % cleLength]));
+        std::cout << format(Decalage(Texte_depart[i], 90) + Decalage(La_cle[i % cleLength]), true);
     }
     std::cout << std::endl;
 
     std::cout << "Rang Final (Total ou Total-26)\t\t\t";    // RANG FINAL
     for (int i = 0; i < textLength; i++){
-        std::cout << format(Decalage(Cryptage(i), 90));
+        std::cout << format(Decalage(Cryptage(i), 90), true);
     }
     std::cout << std::endl;
 
     std::cout << "Texte crypté (lettre associée au rang final)\t";  // TEXTE CRYPTE
     for (int i = 0; i < textLength; i++){
-        std::cout << format(static_cast<char>(Cryptage(i)));
+        std::cout << format(Cryptage(i));
     }
     std::cout << "\n\n";
 
     std::cout << "\033[1mTexte de départ\033[0m" << std::endl;  // TEXTE DE DEPART
     for (int i = 0; i < textLength; i++){
-        std::cout << static_cast<char>(Texte_depart[i]);
+        std::cout << Texte_depart[i];
     }
 
     std::cout << "\n\n\033[1m" << "Texte crypté" << "\033[0m\n";    // TEXTE CRYPTE
     for (int i = 0; i < textLength; i++){   
-        std::cout << static_cast<char>(Cryptage(i));
+        std::cout << Cryptage(i);
     }
     std::cout << std::endl;
 
@@ -376,60 +374,61 @@ void Chiffrer::output(bool isSaved){
     if (f == NULL){
         std::cout << "\nErreur: ouverture impossible du fichier ";
         std::cout << path << std::endl;
+        std::cout << "\n===== ÉCRITURE DES RÉSULTATS NON EFFECTUÉE =====\n";
         return;
     }
     fseek(f, 0, SEEK_END);  // position curseur à la fin du fichier
-    fputs("ANALYSE (MODE CIPHER) =====\n", f);
+    fputs("===== ANALYSE (MODE CIPHER) =====\n", f);
     fputs("Lettre\t\t\t\t\t\t\t\t\t\t\t", f);   // LETTRE
     for (int i = 0; i < 26; i++ ){
-        fputs(format(static_cast<char>(lettres[i])).c_str(), f);
+        fputs(format(lettres[i]).c_str(), f);
     }
     fputs("\nRang dans l'alphabet\t\t\t\t\t\t\t", f);  // RANG
     for (int i = 0; i < 26; i++ ){
-        fputs(format(Decalage(lettres[i], 90)).c_str(), f);
+        fputs(format(Decalage(lettres[i], 90), true).c_str(), f);
     }
     fputs("\n\n\n\nClé de cryptage\t\t\t\t\t\t\t\t\t", f);   // CLE DE CRYPTAGE
     for (int i = 0; i < cleLength; i++){
-        fputs(format<char>(static_cast<char>(La_cle[i])).c_str(), f);
+        fputs(format(La_cle[i]).c_str(), f);
     }
     fputs("\nDécalage (par rapport à la lettre A)\t\t\t", f);    // DECALAGE
     for (int i = 0; i < cleLength; i++){
-        fputs(format(Decalage(La_cle[i])).c_str(), f);
+        fputs(format(Decalage(La_cle[i]), true).c_str(), f);
     }
     fputs("\n\n\nTexte à crypter\t\t\t\t\t\t\t\t\t", f);   // TEXTE
     for (int i = 0; i < textLength; i++){
-        fputs(format(static_cast<char>(Texte_depart[i])).c_str(), f);
+        fputs(format(Texte_depart[i]).c_str(), f);
     }
     fputs("\nRang de départ\t\t\t\t\t\t\t\t\t", f);    // RANG AVANT
     for (int i = 0; i < textLength; i++ ){
-        fputs(format(Decalage(Texte_depart[i], 90)).c_str(), f);
+        fputs(format(Decalage(Texte_depart[i], 90), true).c_str(), f);
     }
     fputs("\nDécalage\t\t\t\t\t\t\t\t\t\t", f);  // DECALAGE
     for (int i = 0; i < textLength; i++){
-        fputs(format(Decalage(La_cle[i % cleLength])).c_str(), f);
+        fputs(format(Decalage(La_cle[i % cleLength]), true).c_str(), f);
     }
     fputs("\nRang après décalage (somme)\t\t\t\t\t\t", f);   // RANG APRES
     for (int i = 0; i < textLength; i++){
-        fputs(format(Decalage(Texte_depart[i], 90) + Decalage(La_cle[i % cleLength])).c_str(), f);
+        fputs(format(Decalage(Texte_depart[i], 90) + Decalage(La_cle[i % cleLength]), true).c_str(), f);
     }
     fputs("\nRang Final (Total ou Total-26)\t\t\t\t\t", f);  // RANG FINAL
     for (int i = 0; i < textLength; i++){
-        fputs(format(Decalage(Cryptage(i), 90)).c_str(), f);
+        fputs(format(Decalage(Cryptage(i), 90), true).c_str(), f);
     }
     fputs("\nTexte crypté (lettre associée au rang final)\t", f); // TEXTE CRYPTE
     for (int i = 0; i < textLength; i++){
-        fputs(format(static_cast<char>(Cryptage(i))).c_str(), f);
+        fputs(format(Cryptage(i)).c_str(), f);
     }
     fputs("\n\nTexte de départ\n", f);  // TEXTE DE DEPART
     for (int i = 0; i < textLength; i++){
-        fputc(static_cast<char>(Texte_depart[i]), f);
+        fputc(Texte_depart[i], f);
     }
     fputs("\n\nTexte crypté\n", f); // TEXTE CRYPTE
     for (int i = 0; i < textLength; i++){   
-        fputc(static_cast<char>(Cryptage(i)), f);
+        fputc(Cryptage(i), f);
     }
-    fputc('\n', f);
+    fputs("\n===== FIN D'ANALYSE =====\n", f);
     fclose(f);
-    std::cout << "\n===== Résultats sauvegardées =====\n";
-    std::cout << "fichier : " << path << std::endl;
+    std::cout << "\n===== ÉCRITURE DES RÉSULTATS EFFECTUÉE =====\n";
+    std::cout << "fichier de sortie : " << path << std::endl;
 }

@@ -13,6 +13,6 @@ int main(void){
     Chiffrer obj = Chiffrer(true); // decipher ?
 
     // by default not saving
-    obj.Analyze(true);  
+    obj.Analyse(true);  
 
 }
