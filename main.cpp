@@ -1,4 +1,4 @@
-#include "chiffre.h"
+#include "chiffrer.h"
 #include <string>
 #include <iostream>
 
@@ -7,9 +7,12 @@ int main(void){
     //
     toUppercase("dream.txt", "out.txt");
 
-    Chiffrer obj(false);
-    obj.enter();
-    obj.print();
-    // obj.toFile();
+    // deux modes de création d'objet
+    // decipher = false => chiffre : détermine le texte crypté 
+    // decipher = true => déchiffre : détermine la clé de cryptage
+    Chiffrer obj(true); // decipher ?
+
+    // by default not saving
+    obj.Analyze();  
 
 }
