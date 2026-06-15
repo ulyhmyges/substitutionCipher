@@ -65,12 +65,16 @@ void toUppercase(const char *input, const char *output)
     fclose(w);
 }
 
-Chiffrer::Chiffrer(bool _cipher) : cipher(_cipher), error(false) {
+Chiffrer::Chiffrer(bool _cipher) : cipher(_cipher) {
     // construction des lettres et rangs de l'alphabet
     for (int i = 0; i < 26; i++){
         lettres[i] = (char)i + 65;
     }
-    // size = 500;
+    buffer = static_cast<char*>(malloc(sizeof(char) * 5));
+}
+
+Chiffrer::~Chiffrer() {
+    free(buffer);
 }
 
 void Chiffrer::Analyse(bool isSaved) {
@@ -129,9 +133,8 @@ char Chiffrer::Decalage(char letter, char ref){
         std::cout << " - Méthode : Decalage()\n";
         return -1;
     }
-    // return  La_cle[index % cleLength] - 65 ;
     char x = letter - ref;
-    x = x < 0 ? x + 26 : x % 26 == 0 ? 26 : x % 26;
+    x = x < 0 ? x + 26 : x == 26 ? 26 : x % 26;
     return x;
 }
 
@@ -159,19 +162,18 @@ char Chiffrer::Cryptage(int i, TypeCrypt type){
     return letter;
 }
 
-std::string Chiffrer::format(char value, TypeFormat type){
-    char str[5];
+char* Chiffrer::format(char value, TypeFormat type){
     switch (type){
     case TypeFormat::CHAR:
-        snprintf(str, 4, " %c ", value); 
+        snprintf(buffer, 4, " %c ", value); 
         break;
     case TypeFormat::DECIMAL:
         if (value < 74)
-            snprintf(str, 4, " %d ", value);
+            snprintf(buffer, 4, " %d ", value);
         else
-            snprintf(str, 4, " %d", value);  
+            snprintf(buffer, 4, " %d", value);  
     }
-    return str;
+    return buffer;
 }
 
 // On suppose la saisie correcte au clavier, 
@@ -344,43 +346,43 @@ void Chiffrer::output(){
     fputs("===== ANALYSE (MODE CIPHER) =====\n", f);
     fputs("Lettre\t\t\t\t\t\t\t\t\t\t\t", f);   // LETTRE
     for (int i = 0; i < 26; i++ ){
-        fputs(format(lettres[i]).c_str(), f);
+        fputs(format(lettres[i]), f);
     }
     fputs("\nRang dans l'alphabet\t\t\t\t\t\t\t", f);  // RANG
     for (int i = 0; i < 26; i++ ){
-        fputs(format(Decalage(lettres[i], 90), TypeFormat::DECIMAL).c_str(), f);
+        fputs(format(Decalage(lettres[i], 90), TypeFormat::DECIMAL), f);
     }
     fputs("\n\n\n\nClé de cryptage\t\t\t\t\t\t\t\t\t", f);   // CLE DE CRYPTAGE
     for (int i = 0; i < cleLength; i++){
-        fputs(format(La_cle[i]).c_str(), f);
+        fputs(format(La_cle[i]), f);
     }
     fputs("\nDécalage (par rapport à la lettre A)\t\t\t", f);    // DECALAGE
     for (int i = 0; i < cleLength; i++){
-        fputs(format(Decalage(La_cle[i]), TypeFormat::DECIMAL).c_str(), f);
+        fputs(format(Decalage(La_cle[i]), TypeFormat::DECIMAL), f);
     }
     fputs("\n\n\nTexte à crypter\t\t\t\t\t\t\t\t\t", f);   // TEXTE
     for (int i = 0; i < textLength; i++){
-        fputs(format(Texte_depart[i]).c_str(), f);
+        fputs(format(Texte_depart[i]), f);
     }
     fputs("\nRang de départ\t\t\t\t\t\t\t\t\t", f);    // RANG AVANT
     for (int i = 0; i < textLength; i++ ){
-        fputs(format(Decalage(Texte_depart[i], 90), TypeFormat::DECIMAL).c_str(), f);
+        fputs(format(Decalage(Texte_depart[i], 90), TypeFormat::DECIMAL), f);
     }
     fputs("\nDécalage\t\t\t\t\t\t\t\t\t\t", f);  // DECALAGE
     for (int i = 0; i < textLength; i++){
-        fputs(format(Decalage(La_cle[i % cleLength]), TypeFormat::DECIMAL).c_str(), f);
+        fputs(format(Decalage(La_cle[i % cleLength]), TypeFormat::DECIMAL), f);
     }
     fputs("\nRang après décalage (somme)\t\t\t\t\t\t", f);   // RANG APRES
     for (int i = 0; i < textLength; i++){
-        fputs(format(Decalage(Texte_depart[i], 90) + Decalage(La_cle[i % cleLength]), TypeFormat::DECIMAL).c_str(), f);
+        fputs(format(Decalage(Texte_depart[i], 90) + Decalage(La_cle[i % cleLength]), TypeFormat::DECIMAL), f);
     }
     fputs("\nRang Final (Total ou Total-26)\t\t\t\t\t", f);  // RANG FINAL
     for (int i = 0; i < textLength; i++){
-        fputs(format(Decalage(Cryptage(i), 90), TypeFormat::DECIMAL).c_str(), f);
+        fputs(format(Decalage(Cryptage(i), 90), TypeFormat::DECIMAL), f);
     }
     fputs("\nTexte crypté (lettre associée au rang final)\t", f); // TEXTE CRYPTE
     for (int i = 0; i < textLength; i++){
-        fputs(format(Cryptage(i)).c_str(), f);
+        fputs(format(Cryptage(i)), f);
     }
     fputs("\n\nTexte de départ\n", f);  // TEXTE DE DEPART
     for (int i = 0; i < textLength; i++){

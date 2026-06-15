@@ -17,6 +17,7 @@ enum TypeFormat {
 class Chiffrer {
 public:
     Chiffrer(bool cipher = true);
+    ~Chiffrer();
     char Decalage(char letter, char ref = 65);
     // TO DO: args char letter, char cipher, bool
     char Cryptage(int i, TypeCrypt type = TypeCrypt::KEY);
@@ -32,13 +33,13 @@ private:
     int textCipherLength;
     char La_cle[500];
     int cleLength;
+    char* buffer;
   
     char path[200];
     bool cipher;
     bool analyseSaved;
-    bool error;
 
-    std::string format(char value, TypeFormat type = TypeFormat::CHAR);
+    char* format(char value, TypeFormat type = TypeFormat::CHAR);
     bool input();
     void output();
 };
