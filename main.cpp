@@ -10,9 +10,9 @@ int main(void){
     // deux modes de création d'objet
     // decipher = false => chiffre : détermine le texte crypté 
     // decipher = true => déchiffre : détermine la clé de cryptage
-    Chiffrer obj = Chiffrer(true); // cipher 
+    Chiffrer obj = Chiffrer(false); // cipher 
 
     // by default not saving
-    obj.Analyse(false);  
+    obj.Analyse(true);  
 
 }

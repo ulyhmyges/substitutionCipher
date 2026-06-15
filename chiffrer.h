@@ -39,7 +39,7 @@ private:
     bool error;
 
     std::string format(char value, TypeFormat type = TypeFormat::CHAR);
-    void input();
+    bool input();
     void output();
 };
 

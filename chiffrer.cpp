@@ -75,16 +75,14 @@ Chiffrer::Chiffrer(bool _cipher) : cipher(_cipher), error(false) {
 
 void Chiffrer::Analyse(bool isSaved) {
     analyseSaved = isSaved;
-    input();
-    if (error)
+    if (!input())
         return;
 
     if (cipher == true){
         // to do
         // nettoyer la clé de cryptage entrée par l'utilisateur ??
     }
-    // Détermine La_cle en mode DECIPHER = true
-    // différence
+    // Détermine La_cle en mode NON CIPHER
     if (cipher == false){
         bool check = false;
         int index = 1;
@@ -105,12 +103,10 @@ void Chiffrer::Analyse(bool isSaved) {
             }
 
             // VERIFICATION
-            // vérification 
             for (int i = 0; i < textCipherLength; i++){
                 x = Cryptage(i);
                 int y = Texte_cipher[i];
                 if (x != y){
-                    // std::cout << "Erreur : Les textes (en clair et crypté) ne correspondent pas.\n\n\n";
                     check = false;
                     break;
                 }
@@ -184,30 +180,21 @@ std::string Chiffrer::format(char value, TypeFormat type){
 // - Texte_depart
 // - La_cle
 // - Texte_cipher
-void Chiffrer::input() {
+bool Chiffrer::input() {
     // SAISIR LE TEXTE DE DEPART
-    std::cout << "Saisir le texte en clair (Taper ';;' pour signaler la fin du texte):\n";
+    std::cout << "Saisir le texte en clair (Tapez ESC + ENTER pour continuer):\n";
     char c;
     scanf("%c", &c);
     textLength = 0;
-    char last = 0;
-    while (c!= EOF && c != 27 && !(c == ';' && last == ';')){
-        last = c;
+    while (c!= EOF && c != 27){
         Texte_depart[textLength] = c;
         scanf("%c", &c);
         textLength++;
     }
-    // La suite de caractères ";;\n" marque la séparation entre le texte et la clé
-    // textLength--;   // ';'
-    // if (textLength > 0 && Texte_depart[textLength - 1] == '\n'){ // '\n'
-    //     textLength--;
-    // }
     // flush stdin
     scanf("%c", &c);    // '\n' 
-    
-    // SAISIR LA CLE DE CRYPTAGE
-    if (cipher) {
-        std::cout << "Saisir la clé de cryptage (Tapez Ctrl + d pour continuer):\n";
+    if (cipher) { // SAISIR LA CLE DE CRYPTAGE
+        std::cout << "Saisir la clé de cryptage (Tapez ENTER pour continuer):\n";
         scanf("%c", &c);
         cleLength = 0;
         while (c != EOF && c != '\n'){
@@ -215,53 +202,33 @@ void Chiffrer::input() {
             scanf("%c", &c);
             cleLength++;
         }
-        // n'inclue pas le caractère '\n' dans la clé de cryptage La_cle
-        if (cleLength > 0 && La_cle[cleLength - 1] == '\n'){
-            cleLength--;
-        }
-        std::cout << std::endl;
-    } else {
-        // SAISIR LE TEXTE CRYPTE
-        std::cout << "Saisir le texte chiffré (Taper ';;' pour signaler la fin du texte):\n";
+    } else { // SAISIR LE TEXTE CRYPTE
+        std::cout << "Saisir le texte chiffré (Tapez ESC + ENTER pour continuer):\n";
         scanf("%c", &c);
         textCipherLength = 0;
-        last = 0;
-        while (c!= EOF && !(c == ';' && last == ';')){
-            last = c;
+        while (c!= EOF && c != 27){
             Texte_cipher[textCipherLength] = c;
             scanf("%c", &c);
             textCipherLength++;
         }
-        if (textCipherLength == 0) {
-            std::cout << "Erreur : Text chiffré invalide\n";
-            return;
-        }
-        // La suite de caractères ";;\n" marque la séparation entre le texte et la clé
-        textCipherLength--;   // ';'
-        if (textCipherLength > 0 && Texte_cipher[textCipherLength - 1] == '\n'){ // '\n'
-            textCipherLength--;
-        }
-        if (textCipherLength != textLength) {
-            std::cout << "Erreur : Text chiffré invalide\n";
-            error = true;
-            return;
-        }
-        // flush
-        scanf("%c", &c);    // '\n'
     }
 
-    // MODE CIPHER : on peut sauvegarder l'analyse des résultats
+    if ((cipher && (textLength == 0 || cleLength == 0)) 
+        || (!cipher && (textCipherLength == 0 || textLength != textCipherLength))){
+        std::cout << "Erreur : Saisie invalide\n";
+        return false;
+    }
     if (!cipher || !analyseSaved )
-        return;
-    
-    std::cout << "Pour la sauvegarde des résultats,\n";
-    std::cout << "veuillez saisir le chemin complet d'un fichier existant (en local):" << std::endl;
+        return true;
+    // MODE CIPHER : on peut sauvegarder l'analyse des résultats
+    std::cout << "\nPour la sauvegarde des résultats,\n";
+    std::cout << "veuillez saisir le chemin d'un fichier existant (en local):" << std::endl;
     int r = scanf("%s", path);
     if (r != 1){
         std::cout << "Erreur : entrée invalide chemin de fichier\n";
-        error = true;
-        return;
+        return false;
     }
+    return true;
 }
 
 void Chiffrer::output(){
