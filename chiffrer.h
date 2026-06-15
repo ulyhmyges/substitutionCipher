@@ -4,31 +4,43 @@
 
 void toUppercase(const char* input, const char* output);
 
+enum TypeCrypt {
+    KEY,
+    TEXT
+};
+
+enum TypeFormat {
+    CHAR,
+    DECIMAL
+};
+
 class Chiffrer {
 public:
-    Chiffrer(bool decipher = false);
+    Chiffrer(bool cipher = true);
     char Decalage(char letter, char ref = 65);
-    char Cryptage(int index, bool key = false);
-    void Analyse(bool isSaved = false);
+    // TO DO: args char letter, char cipher, bool
+    char Cryptage(int i, TypeCrypt type = TypeCrypt::KEY);
+    void Analyse(bool analyseSaved = false);
 
 
 private:
+
     char lettres[26];
     char Texte_depart[500];
-
     int textLength;
     char Texte_cipher[500];
     int textCipherLength;
-    char La_cle[100];
+    char La_cle[500];
     int cleLength;
   
     char path[200];
-    bool decipher;
+    bool cipher;
+    bool analyseSaved;
     bool error;
 
-    std::string format(char value, bool decimal = false);
-    void input(bool isSaved = false);
-    void output(bool isSaved = false);
+    std::string format(char value, TypeFormat type = TypeFormat::CHAR);
+    void input();
+    void output();
 };
 
 #endif  // CHIFFRER__H
