@@ -14,5 +14,6 @@ int main(void){
 
     // by default not saving
     obj.Analyse(true);  
+    obj.Analyse(false);
 
 }

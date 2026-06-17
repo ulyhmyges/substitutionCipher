@@ -82,6 +82,12 @@ void Chiffrer::Analyse(bool isSaved) {
     if (!input())
         return;
 
+    Calcule_clé(); 
+    
+    output();
+}
+
+void Chiffrer::Calcule_clé() {
     if (cipher == true){
         // to do
         // nettoyer la clé de cryptage entrée par l'utilisateur ??
@@ -117,8 +123,6 @@ void Chiffrer::Analyse(bool isSaved) {
             index = j + 1;
         }    
     }
-   
-    output();
 }
 
 // Calcule le décalage de la ième lettre du tableau Texte_depart pour i = index  

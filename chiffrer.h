@@ -21,6 +21,7 @@ public:
 
     char Decalage(char letter, char ref = 65);
     char Cryptage(char letter, char crypt, TypeCrypt type = TypeCrypt::KEY);
+    void Calcule_clé();
     void Analyse(bool analyseSaved = false);
 
 private:
