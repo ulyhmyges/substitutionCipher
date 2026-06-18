@@ -5,15 +5,16 @@
 
 int main(void){
     //
-    toUppercase("dream.txt", "out.txt");
+    // toUppercase("test/d.txt", "test/dd.txt");
 
     // deux modes de création d'objet
     // decipher = false => chiffre : détermine le texte crypté 
     // decipher = true => déchiffre : détermine la clé de cryptage
-    Chiffrer obj = Chiffrer(); // cipher 
+    Chiffrer obj = Chiffrer(false); // cipher = true par défaut
 
     // by default not saving
     obj.Analyse(true);  
-    obj.Analyse(false);
+    
+
 
 }

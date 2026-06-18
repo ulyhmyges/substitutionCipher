@@ -8,9 +8,8 @@
 *.obj
 obj
 
-# test files
-test/
-*.txt
+# text files
+unix-color-codes.txt
 
 # Binary file
 main
@@ -143,3 +142,5 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+*.old

@@ -19,9 +19,8 @@ public:
     Chiffrer(bool cipher = true);
     ~Chiffrer();
 
-    char Decalage(char letter, char ref = 65);
+    char Décalage(char letter, char ref = 65);
     char Cryptage(char letter, char crypt, TypeCrypt type = TypeCrypt::KEY);
-    void Calcule_clé();
     void Analyse(bool analyseSaved = false);
 
 private:
@@ -29,14 +28,15 @@ private:
     bool analyseSaved;
     char path[200];
     char lettres[26];
-    char Texte_depart[500];
-    char Texte_cipher[500];
-    char La_cle[500];
+    char Texte_depart[50];
+    char Texte_cipher[50];
+    char La_cle[50];
     int textLength;
     int textCipherLength;
     int cleLength;
     char* buffer;
 
+    void Calcule_clé();
     char* format(char value, TypeFormat type = TypeFormat::CHAR);
     bool input();
     void output();
