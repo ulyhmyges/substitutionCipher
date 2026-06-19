@@ -11,6 +11,7 @@ obj
 # text files
 unix-color-codes.txt
 test.txt
+text.h
 
 # Binary file
 main

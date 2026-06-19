@@ -1,12 +1,10 @@
-#ifndef CHIFFRER_H
-#define CHIFFRER_H
+#ifndef SUBSTITUTION_H
+#define SUBSTITUTION_H
 #include <string>
 
-void toUppercase(const char* input, const char* output);
-
-enum TypeCrypt { // MODE CIPHER / NON CIPHER
-    CLE,    // la clé de cryptage est utilisé
-    TEXTE    // le texte crypté est utilisé
+enum Mode { // MODE chiffrement / déchiffrement
+    CHIFFRE,    // la clé de cryptage est utilisé
+    DECHIFFRE    // le texte crypté est utilisé
 };
 
 enum TypeFormat { // formatage à l'affichage
@@ -14,18 +12,18 @@ enum TypeFormat { // formatage à l'affichage
     DECIMAL
 };
 
-class Chiffrer {
+class Substitution {
 public:
-    Chiffrer(bool déchiffre = true);
-    ~Chiffrer();
+    Substitution(Mode mode = Mode::CHIFFRE);
+    ~Substitution();
 
     char Décalage(char lettre, char ref = 65);
-    char Cryptage(char lettre, char crypt, TypeCrypt type = TypeCrypt::CLE);
+    char Cryptage(char lettre, char crypt, Mode mode = Mode::CHIFFRE);
     void Analyse(bool sauvée = false);
 
 private:
-    bool déchiffre;
-    bool analyseSauvegardée;
+    Mode mode;
+    bool analyseSauvegardee;
     char chemin[200];
     char lettres[26];
     char Texte_depart[50];
@@ -33,7 +31,7 @@ private:
     char La_cle[50];
     int longueurTexteDepart;
     int longueurTexteCrypté;
-    int longueurClé;
+    int longueurCle;
     char* tampon;
 
     void Calcule_clé();
@@ -42,4 +40,4 @@ private:
     void sortie();
 };
 
-#endif  // CHIFFRER__H
+#endif  // SUBSTITUTION__H
