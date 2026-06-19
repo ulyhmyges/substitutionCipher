@@ -1,33 +1,31 @@
 #ifndef SUBSTITUTION_H
 #define SUBSTITUTION_H
-#include <string>
 
-enum MODE { // MODE chiffrement / déchiffrement
-    CHIFFRE,    // la clé de cryptage est utilisé
-    DECHIFFRE    // le texte crypté est utilisé
+enum MODE {
+    CHIFFRE,    // crypte le texte avec la clé de cryptage
+    DECHIFFRE    // détermine la clé de cryptage
 };
-
 enum TYPE { // formatage à l'affichage
     CHAR,
     DECIMAL
 };
-
 struct Tableau {
     char tab[50];
     int dim;
 };
 
+// Pour une analyse de la cryptographie utilisée
+// Appelez successivement
+// en mode CHIFFRE les méthodes Saisie et Sortie
+// en mode DECHIFFRE les méthodes Saisie, Calcule_clé et Sortie
 class Substitution {
 public:
     Substitution(MODE mode = MODE::CHIFFRE, bool sauvegardee = false);
     ~Substitution();
 
-    char Décalage(char lettre, char ref = 65);
-    char Cryptage(char lettre, char crypt, MODE mode = MODE::CHIFFRE);
-    void Calcule_clé();
     bool Saisie();
+    void Calcule_clé();
     void Sortie();
-    char* Format(char value, TYPE type = TYPE::CHAR);
 
 private:
     MODE Mode;
@@ -38,6 +36,10 @@ private:
     char Lettres[26];
     bool AnalyseSauvegardee;
     char* Tampon;
+
+    char Décalage(char lettre, char ref = 65);
+    char Cryptage(char lettre, char crypt, MODE mode = MODE::CHIFFRE);
+    char* Format(char value, TYPE type = TYPE::CHAR);
 };
 
 #endif  // SUBSTITUTION__H

@@ -15,41 +15,36 @@ Substitution::~Substitution() {
 }
 
 void Substitution::Calcule_clé() {
-    if (Mode == MODE::CHIFFRE){
-        // to do
-        // nettoyer la clé de cryptage entrée par l'utilisateur ??
-    }
-    // Détermine La_cle en mode déchiffre
-    if (Mode == MODE::DECHIFFRE){
-        bool cléTrouvée = false;
-        int index = 1;
-        while (!cléTrouvée){
-            cléTrouvée = true;
-            int x = Cryptage(Texte_depart.tab[0], Texte_crypté.tab[0], Mode); // return cipher key letter
-            int j;
-            La_cle.dim = 0;
-            for (j = index; j < Texte_crypté.dim; j++){
-                int y = Cryptage(Texte_depart.tab[j], Texte_crypté.tab[j], Mode); // lettre de la clé de cryptage
-                if (x == y){
-                    break;
-                }
+    if (Mode == MODE::CHIFFRE) return;
+    // MODE DECHIFFRE : trouve la clé de cryptage utilisée
+    bool cléTrouvée = false;
+    int index = 1;
+    while (!cléTrouvée){
+        cléTrouvée = true;
+        int x = Cryptage(Texte_depart.tab[0], Texte_crypté.tab[0], Mode); // return cipher key letter
+        int j;
+        La_cle.dim = 0;
+        for (j = index; j < Texte_crypté.dim; j++){
+            int y = Cryptage(Texte_depart.tab[j], Texte_crypté.tab[j], Mode); // lettre de la clé de cryptage
+            if (x == y){
+                break;
             }
-            La_cle.dim = j;
-            for (int i = 0; i < La_cle.dim; i++){
-                La_cle.tab[i] = Cryptage(Texte_depart.tab[i], Texte_crypté.tab[i], Mode);
-            }
+        }
+        La_cle.dim = j;
+        for (int i = 0; i < La_cle.dim; i++){
+            La_cle.tab[i] = Cryptage(Texte_depart.tab[i], Texte_crypté.tab[i], Mode);
+        }
 
-            // VERIFICATION
-            for (int i = 0; i < Texte_crypté.dim; i++){
-                x = Cryptage(Texte_depart.tab[i], La_cle.tab[i % La_cle.dim]);
-                if (x != Texte_crypté.tab[i]){
-                    cléTrouvée = false;
-                    break;
-                }
+        // VERIFICATION
+        for (int i = 0; i < Texte_crypté.dim; i++){
+            x = Cryptage(Texte_depart.tab[i], La_cle.tab[i % La_cle.dim]);
+            if (x != Texte_crypté.tab[i]){
+                cléTrouvée = false;
+                break;
             }
-            index = j + 1;
-        }    
-    }
+        }
+        index = j + 1;
+    }    
 }
 
 // Calcule le décalage de la ième lettre du tableau Texte_depart pour i = index  
@@ -115,7 +110,7 @@ char* Substitution::Format(char valeur, TYPE type){
 // On suppose la taille du texte de départ supérieure ou égale à la taille de la clé de cryptage
 // - Texte_depart
 // - La_cle
-// - Texte_cipher
+// - Texte_crypté
 bool Substitution::Saisie() {
     bool réussi = true;
     // SAISIR LE TEXTE DE DEPART
