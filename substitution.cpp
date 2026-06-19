@@ -162,7 +162,7 @@ bool Substitution::Saisie() {
         if (!AnalyseSauvegardee) return réussi;
         std::cout << "\nPour la sauvegarde des résultats,\n";
         std::cout << "veuillez saisir le chemin d'un fichier existant (en local):" << std::endl;
-        int r = scanf("%s", Chemin);
+        int r = scanf("%s", Chemin.tab);
         if (r != 1){
             std::cout << "Erreur : entrée invalide chemin de fichier\n";
             réussi = false;
@@ -272,10 +272,10 @@ void Substitution::Sortie(){
         return;
 
     FILE* f = NULL;
-    f = fopen(Chemin, "r+");  // le fichier doit exister
+    f = fopen(Chemin.tab, "r+");  // le fichier doit exister
     if (f == NULL){
         std::cout << "\nErreur: ouverture impossible du fichier ";
-        std::cout << Chemin << std::endl;
+        std::cout << Chemin.tab << std::endl;
         std::cout << "\n===== ÉCRITURE DES RÉSULTATS NON EFFECTUÉE =====\n";
         return;
     }
@@ -332,5 +332,5 @@ void Substitution::Sortie(){
     fputs("\n===== FIN D'ANALYSE =====\n", f);
     fclose(f);
     std::cout << "\n===== ÉCRITURE DES RÉSULTATS EFFECTUÉE =====\n";
-    std::cout << "fichier de sortie : " << Chemin << std::endl;
+    std::cout << "fichier de sortie : " << Chemin.tab << std::endl;
 }

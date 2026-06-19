@@ -37,7 +37,6 @@ private:
     Tableau Chemin;
     char Lettres[26];
     bool AnalyseSauvegardee;
-  
     char* Tampon;
 };
 
