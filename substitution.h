@@ -20,6 +20,8 @@ struct Tableau {
 // en mode DECHIFFRE les méthodes Saisie, Calcule_clé et Sortie
 class Substitution {
 public:
+    // Le mode CHIFFRE crypte le texte avec la clé de cryptage
+    // Le mode DECHIFFRE détermine la clé de cryptage à partir des textes en clair et crypté
     Substitution(MODE mode = MODE::CHIFFRE, bool sauvegardee = false);
     ~Substitution();
 
