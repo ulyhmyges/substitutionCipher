@@ -1,0 +1,28 @@
+BERNARDO
+A
+test/enclair.txt
+
+
+===== ANALYSE (CHIFFREMENT) =====
+Lettre											 A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z 
+Rang dans l'alphabet							 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+
+
+
+Clé de cryptage									 A 
+Décalage (par rapport à la lettre A)			 0 
+
+
+Texte à crypter									 B  E  R  N  A  R  D  O 
+Rang de départ									 2  5  18 14 1  18 4  15
+Décalage										 0  0  0  0  0  0  0  0 
+Rang après décalage (somme)						 2  5  18 14 1  18 4  15
+Rang Final (Total ou Total-26)					 2  5  18 14 1  18 4  15
+Texte crypté (lettre associée au rang final)	 B  E  R  N  A  R  D  O 
+
+Texte de départ
+BERNARDO
+
+Texte crypté
+BERNARDO
+===== FIN D'ANALYSE =====

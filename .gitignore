@@ -12,6 +12,9 @@ obj
 unix-color-codes.txt
 test.txt
 text.h
+captures
+.DS_Store
+*.docx
 
 # Binary file
 main

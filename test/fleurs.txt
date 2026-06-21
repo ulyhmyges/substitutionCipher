@@ -1,0 +1,28 @@
+LESABEILLESSONTBELLESETFONTDUBONMIEL
+FLEURS
+test/fleurs.txt
+
+
+===== ANALYSE (CHIFFREMENT) =====
+Lettre											 A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z 
+Rang dans l'alphabet							 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+
+
+
+Clé de cryptage									 F  L  E  U  R  S 
+Décalage (par rapport à la lettre A)			 5  11 4  20 17 18
+
+
+Texte à crypter									 L  E  S  A  B  E  I  L  L  E  S  S  O  N  T  B  E  L  L  E  S  E  T  F  O  N  T  D  U  B  O  N  M  I  E  L 
+Rang de départ									 12 5  19 1  2  5  9  12 12 5  19 19 15 14 20 2  5  12 12 5  19 5  20 6  15 14 20 4  21 2  15 14 13 9  5  12
+Décalage										 5  11 4  20 17 18 5  11 4  20 17 18 5  11 4  20 17 18 5  11 4  20 17 18 5  11 4  20 17 18 5  11 4  20 17 18
+Rang après décalage (somme)						 17 16 23 21 19 23 14 23 16 25 36 37 20 25 24 22 22 30 17 16 23 25 37 24 20 25 24 24 38 20 20 25 17 29 22 30
+Rang Final (Total ou Total-26)					 17 16 23 21 19 23 14 23 16 25 10 11 20 25 24 22 22 4  17 16 23 25 11 24 20 25 24 24 12 20 20 25 17 3  22 4 
+Texte crypté (lettre associée au rang final)	 Q  P  W  U  S  W  N  W  P  Y  J  K  T  Y  X  V  V  D  Q  P  W  Y  K  X  T  Y  X  X  L  T  T  Y  Q  C  V  D 
+
+Texte de départ
+LESABEILLESSONTBELLESETFONTDUBONMIEL
+
+Texte crypté
+QPWUSWNWPYJKTYXVVDQPWYKXTYXXLTTYQCVD
+===== FIN D'ANALYSE =====

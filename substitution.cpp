@@ -1,5 +1,4 @@
 #include "substitution.h"
-// #include <cstdio>
 #include <iostream>
 
 Substitution::Substitution(MODE mode, bool sauvegardee) : Mode(mode), AnalyseSauvegardee(sauvegardee) {
@@ -12,97 +11,6 @@ Substitution::Substitution(MODE mode, bool sauvegardee) : Mode(mode), AnalyseSau
 
 Substitution::~Substitution() {
     free(Tampon);
-}
-
-void Substitution::Calcule_clé() {
-    if (Mode == MODE::CHIFFRE) return;
-    // MODE DECHIFFRE : trouve la clé de cryptage utilisée
-    bool cléTrouvée = false;
-    int index = 1;
-    while (!cléTrouvée){
-        cléTrouvée = true;
-        int x = Cryptage(Texte_depart.tab[0], Texte_crypté.tab[0], Mode); // return cipher key letter
-        int j;
-        La_cle.dim = 0;
-        for (j = index; j < Texte_crypté.dim; j++){
-            int y = Cryptage(Texte_depart.tab[j], Texte_crypté.tab[j], Mode); // lettre de la clé de cryptage
-            if (x == y){
-                break;
-            }
-        }
-        La_cle.dim = j;
-        for (int i = 0; i < La_cle.dim; i++){
-            La_cle.tab[i] = Cryptage(Texte_depart.tab[i], Texte_crypté.tab[i], Mode);
-        }
-
-        // VERIFICATION
-        for (int i = 0; i < Texte_crypté.dim; i++){
-            x = Cryptage(Texte_depart.tab[i], La_cle.tab[i % La_cle.dim]);
-            if (x != Texte_crypté.tab[i]){
-                cléTrouvée = false;
-                break;
-            }
-        }
-        index = j + 1;
-    }    
-}
-
-// Calcule le décalage de la ième lettre du tableau Texte_depart pour i = index  
-// letter (int) : lettre à décaler exprimée en code ASCII
-// ref (int) : lettre de référence exprimée en code ASCII
-char Substitution::Décalage(char lettre, char ref){
-    // la lettre à décaler et la lettre de référence 
-    if (lettre < 65 || lettre > 90 || ref < 65 || ref > 90) {
-        std::cout << "\nErreur : argument invalide - ";
-        std::cout << "letter: " << lettre << ", ref: " <<ref;
-        std::cout << " - Méthode : Décalage()\n";
-        return -1;
-    }
-    char x = lettre - ref;
-    x = x < 0 ? x + 26 : x == 26 ? 26 : x % 26;
-    // rang
-    if (ref == 90 && x == 0)
-        x = 26;
-    return x;
-}
-
-// Pour chaque lettre de Texte_depart, 
-// on somme son rang de départ avec le décalage fourni par la clé de cryptage La_cle
-// on retourne sa valeur ASCII
-char Substitution::Cryptage(char lettre, char crypt, MODE m){
-    if (lettre < 65 || lettre > 90 || crypt < 65 || crypt > 90) {
-        std::cout << "\nErreur : argument invalide\n";
-        std::cout << "Méthode : Cryptage()\n";
-        return -1;
-    }
-    char c = 0;
-    switch (m){
-    case MODE::DECHIFFRE:
-        // difference des rangs (début et fin) = décalage de la lettre de la clé de cryptage
-        c = Décalage(crypt, 90) - Décalage(lettre, 90);
-        c = c < 0 ? c + 26 : c; // si le décalage est non positif, on ajoute 26;
-        c = c + 65;
-        break;
-    default: // CHIFFRE
-        c = Décalage(lettre, 90) + Décalage(crypt);
-        c = c % 26 == 0 ? 26 : c % 26;
-        c = c + 64;   // code ASCII à partir du rang de la lettre
-    }
-    return c;
-}
-
-char* Substitution::Format(char valeur, TYPE type){
-    switch (type){
-    case TYPE::DECIMAL:
-        if (valeur < 10)
-            snprintf(Tampon, 4, " %d ", valeur);
-        else
-            snprintf(Tampon, 4, " %d", valeur);  
-        break;
-    default: // CHAR
-        snprintf(Tampon, 4, " %c ", valeur); 
-    }
-    return Tampon;
 }
 
 // On suppose la saisie correcte au clavier, 
@@ -166,15 +74,48 @@ bool Substitution::Saisie() {
     return réussi;
 }
 
+void Substitution::Calcule_clé() {
+    if (Mode == MODE::CHIFFRE) return;
+    // MODE DECHIFFRE : trouve la clé de cryptage utilisée
+    bool cléTrouvée = false;
+    int index = 1;
+    while (!cléTrouvée){
+        cléTrouvée = true;
+        int x = Cryptage(Texte_depart.tab[0], Texte_crypté.tab[0], Mode); // return cipher key letter
+        int j;
+        La_cle.dim = 0;
+        for (j = index; j < Texte_crypté.dim; j++){
+            int y = Cryptage(Texte_depart.tab[j], Texte_crypté.tab[j], Mode); // lettre de la clé de cryptage
+            if (x == y){
+                break;
+            }
+        }
+        La_cle.dim = j;
+        for (int i = 0; i < La_cle.dim; i++){
+            La_cle.tab[i] = Cryptage(Texte_depart.tab[i], Texte_crypté.tab[i], Mode);
+        }
+
+        // VERIFICATION
+        for (int i = 0; i < Texte_crypté.dim; i++){
+            x = Cryptage(Texte_depart.tab[i], La_cle.tab[i % La_cle.dim]);
+            if (x != Texte_crypté.tab[i]){
+                cléTrouvée = false;
+                break;
+            }
+        }
+        index = j + 1;
+    }    
+}
+
 void Substitution::Sortie(){
     if (Mode == MODE::DECHIFFRE){ // AFFICHAGE DANS LA CONSOLE
-        std::cout << "\n===== ANALYSE (MODE DECHIFFRE) =====\n";
+        std::cout << "\n===== ANALYSE (MODE DECHIFFREMENT) =====\n";
         std::cout << "Texte initial : ";
         for (int i = 0; i < Texte_depart.dim; i++){
             std::cout << Texte_depart.tab[i];
         }
         std::cout << "\nTexte crypté : ";
-        for (int i = 0; i < Texte_depart.dim; i++){   
+        for (int i = 0; i < Texte_crypté.dim; i++){   
             std::cout << Cryptage(Texte_depart.tab[i], La_cle.tab[i % La_cle.dim]);
         }
         std::cout << "\nClé de cryptage : ";
@@ -186,7 +127,7 @@ void Substitution::Sortie(){
     }
    
     // AFFICHAGE MODE CHIFFRE
-    std::cout << "\n===== ANALYSE (MODE CHIFFRE) =====\n";
+    std::cout << "\n===== ANALYSE (MODE CHIFFREMENT) =====\n";
     std::cout << "Lettre\t\t\t\t\t\t";      // LETTRE
     for (int i = 0; i < 26; i++ ){
         std::cout << Format(Lettres[i]);
@@ -328,4 +269,61 @@ void Substitution::Sortie(){
     fclose(f);
     std::cout << "\n===== ÉCRITURE DES RÉSULTATS EFFECTUÉE =====\n";
     std::cout << "fichier de sortie : " << Chemin.tab << std::endl;
+}
+
+// letter (int) : lettre à décaler exprimée en code ASCII
+// ref (int) : lettre de référence exprimée en code ASCII
+char Substitution::Décalage(char lettre, char ref){
+    // la lettre à décaler et la lettre de référence 
+    if (lettre < 65 || lettre > 90 || ref < 65 || ref > 90) {
+        std::cout << "\nErreur : argument invalide - ";
+        std::cout << "letter: " << lettre << ", ref: " <<ref;
+        std::cout << " - Méthode : Décalage()\n";
+        return -1;
+    }
+    char x = lettre - ref;
+    x = x < 0 ? x + 26 : x == 26 ? 26 : x % 26;
+    // rang
+    if (ref == 90 && x == 0)
+        x = 26;
+    return x;
+}
+
+// Pour chaque lettre de Texte_depart, 
+// on somme son rang de départ avec le décalage fourni par la clé de cryptage La_cle
+// on retourne sa valeur ASCII
+char Substitution::Cryptage(char lettre, char crypt, MODE m){
+    if (lettre < 65 || lettre > 90 || crypt < 65 || crypt > 90) {
+        std::cout << "\nErreur : argument invalide\n";
+        std::cout << "Méthode : Cryptage()\n";
+        return -1;
+    }
+    char c = 0;
+    switch (m){
+    case MODE::DECHIFFRE:
+        // difference des rangs (début et fin) = décalage de la lettre de la clé de cryptage
+        c = Décalage(crypt, 90) - Décalage(lettre, 90);
+        c = c < 0 ? c + 26 : c; // si le décalage est non positif, on ajoute 26;
+        c = c + 65;
+        break;
+    default: // CHIFFRE
+        c = Décalage(lettre, 90) + Décalage(crypt);
+        c = c % 26 == 0 ? 26 : c % 26;
+        c = c + 64;   // code ASCII à partir du rang de la lettre
+    }
+    return c;
+}
+
+char* Substitution::Format(char valeur, TYPE type){
+    switch (type){
+    case TYPE::DECIMAL:
+        if (valeur < 10)
+            snprintf(Tampon, 4, " %d ", valeur);
+        else
+            snprintf(Tampon, 4, " %d", valeur);  
+        break;
+    default: // CHAR
+        snprintf(Tampon, 4, " %c ", valeur); 
+    }
+    return Tampon;
 }

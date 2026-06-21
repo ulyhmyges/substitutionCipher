@@ -1,0 +1,27 @@
+ZORRO
+HAHA
+test/court.txt
+
+===== ANALYSE (CHIFFREMENT) =====
+Lettre											 A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z 
+Rang dans l'alphabet							 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+
+
+
+Clé de cryptage									 H  A  H  A 
+Décalage (par rapport à la lettre A)			 7  0  7  0 
+
+
+Texte à crypter									 Z  O  R  R  O 
+Rang de départ									 26 15 18 18 15
+Décalage										 7  0  7  0  7 
+Rang après décalage (somme)						 33 15 25 18 22
+Rang Final (Total ou Total-26)					 7  15 25 18 22
+Texte crypté (lettre associée au rang final)	 G  O  Y  R  V 
+
+Texte de départ
+ZORRO
+
+Texte crypté
+GOYRV
+===== FIN D'ANALYSE =====
