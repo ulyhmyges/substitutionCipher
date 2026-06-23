@@ -13,13 +13,13 @@
 #### Fonctionnalité : Crypter un texte en majuscule
 
 <div style="text-align: center;">
-  <img src="./schema/archi_p1.png" alt="Architecture de la partie 1 du programme">
+  <img src="./assets/schema/archi_p1.png" alt="Architecture de la partie 1 du programme">
 <p>Schéma de l'architecture</p>
 </div>
 
 #### Fonctionnalité : Retrouver la clé de cryptage
 
 <div style="text-align: center;">
-  <img src="./schema/archi_p2.png" alt="Architecture de la partie 1 du programme">
+  <img src="./assets/schema/archi_p2.png" alt="Architecture de la partie 1 du programme">
 <p>Schéma de l'architecture</p>
 </div>
