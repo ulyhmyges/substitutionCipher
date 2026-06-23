@@ -2,7 +2,7 @@
 #include <iostream>
 
 int main(void){
-    int cas = 1;
+    int cas = 2;
     switch (cas){
         case 1:
         {
